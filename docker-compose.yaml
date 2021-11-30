@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    entrypoint: wait-for db:3306 -t 40 -- sh -c "npm install && npm run start:dev"
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+
+  db:
+    build: ./.docker/mysql
+    restart: always
+    tty: true
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=fin
+      - MYSQL_ROOT_PASSWORD=root
